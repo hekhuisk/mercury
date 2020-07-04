@@ -23,6 +23,10 @@ public class Money {
         this(amount, defaultCurrency);
     }
 
+    public Money(double amount, Currency currency) {
+        this(BigDecimal.valueOf(amount), currency);
+    }
+
     public Money(double amount) {
         this(BigDecimal.valueOf(amount));
     }

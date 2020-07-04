@@ -1,4 +1,4 @@
-package hekhuis.mercury.entity;
+package hekhuis.mercury.entity.budget;
 
 import java.time.Year;
 

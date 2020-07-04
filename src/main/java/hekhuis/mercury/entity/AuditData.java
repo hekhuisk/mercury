@@ -2,10 +2,10 @@ package hekhuis.mercury.entity;
 
 import java.time.ZonedDateTime;
 
-public class AuditData {
+public abstract class AuditData {
 
-    private ZonedDateTime createDate;
-    private ZonedDateTime modifiedDate;
+    protected ZonedDateTime createDate;
+    protected ZonedDateTime modifiedDate;
 
     public ZonedDateTime getCreateDate() {
         return createDate;

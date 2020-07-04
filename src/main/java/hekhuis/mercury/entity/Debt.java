@@ -1,4 +1,4 @@
 package hekhuis.mercury.entity;
 
-public enum BudgetType {
+public class Debt {
 }
