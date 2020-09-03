@@ -3,6 +3,7 @@ package hekhuis.mercury.entity.budget;
 public class Budget {
 
     private int budgetID;
+    private int userID;
 
     private String name;
     private String description;
@@ -15,6 +16,14 @@ public class Budget {
 
     public void setBudgetID(int budgetID) {
         this.budgetID = budgetID;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
     public String getName() {

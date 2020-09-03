@@ -1,18 +1,26 @@
 package hekhuis.mercury.entity;
 
+import hekhuis.mercury.spring.jpa.CurrencyConverter;
+
+import javax.persistence.Convert;
+import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 
+@Embeddable
 public class Money {
 
     private static final Currency defaultCurrency = Currency.getInstance("USD");
     private static final Locale defaultLocale = Locale.US;
 
     private BigDecimal amount;
+    @Convert(converter = CurrencyConverter.class)
     private Currency currency;
+
+    protected Money() {}
 
     public Money(BigDecimal amount, Currency currency) {
         this.currency = currency;
@@ -35,8 +43,16 @@ public class Money {
         return amount;
     }
 
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     public Currency getCurrency() {
         return currency;
+    }
+
+    public void setAmount(Currency currency) {
+        this.currency = currency;
     }
 
     @Override

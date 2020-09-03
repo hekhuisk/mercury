@@ -1,49 +1,75 @@
 package hekhuis.mercury.service;
 
 import hekhuis.mercury.entity.Expense;
-import hekhuis.mercury.entity.ExpenseSearchQuery;
+import hekhuis.mercury.repository.ExpenseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.time.Month;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@Service
+//@Transactional
 public class ExpenseService {
 
-    private static Map<Integer, Expense> expenseMap = new HashMap<>();
+    @Autowired
+    private ExpenseRepository expenseRepository;
 
-    public void createExpense(Expense expense) {
-        expenseMap.put(expense.getExpenseID(), expense);
+    public List<Expense> getAllExpenses() {
+        return expenseRepository.findAll();
     }
 
-    public Expense getExpense(int expenseID) {
-        return expenseMap.get(expenseID);
+    public Expense saveExpense(Expense expense) {
+        return expenseRepository.save(expense);
     }
 
-    public void updateExpense(int expenseID, Expense expense) {
-        expenseMap.put(expenseID, expense);
+    public Expense getExpense(long id) {
+        return expenseRepository.findById(id).get();
     }
 
-    public void deleteExpense(int expenseID) {
-        expenseMap.remove(expenseID);
+    public void deleteExpense(long id) {
+        expenseRepository.deleteById(id);
     }
 
-    public List<Expense> getExpenses(int month, int year) {
-        List<Expense> expenses = new ArrayList<>();
+    //    public static final ExpenseDAO expenseDAO = new ExpenseDAO();
 
-        for (Expense expense : expenseMap.values()) {
-            ZonedDateTime expenseDate = expense.getExpenseDate();
-            if (expenseDate.getMonth() == Month.of(month) && expenseDate.getYear() == year) {
-                expenses.add(expense);
-            }
-        }
+//
+//    public void createExpense(Expense expense, User user) throws Exception {
+//        SecurityUtil.validateUserCanEditBudget(user, expense.getBudgetID());
+//        expenseDAO.createExpense(expense, user);
+//    }
+//
+//    public Expense getExpense(int expenseID, int budgetID, User user) throws Exception {
+//        SecurityUtil.validateUserCanEditBudget(user, budgetID);
+//        return expenseDAO.getExpense(expenseID, budgetID, user);
+//    }
+//
+//    public void updateExpense(int expenseID, Expense expense, User user) throws Exception {
+//        if (expenseID != expense.getExpenseID()) {
+//            throw new Exception();
+//        }
+//        SecurityUtil.validateUserCanEditBudget(user, expense.getBudgetID());
+//        expenseDAO.updateExpense(expenseID, expense, expense.getBudgetID(), user);
+//    }
+//
+//    public void deleteExpense(int expenseID, int budgetID, User user) throws Exception {
+//        SecurityUtil.validateUserCanEditBudget(user, budgetID);
+//        expenseDAO.deleteExpense(expenseID, budgetID, user);
+//    }
 
-        return expenses;
-    }
-
-    public List<Expense> getExpenses(ExpenseSearchQuery searchQuery) {
-        return new ArrayList<>();
-    }
+//    public List<Expense> getExpenses(int month, int year, int budgetID, User user) {
+//        List<Expense> expenses = new ArrayList<>();
+//
+//        for (Expense expense : expenseMap.values()) {
+//            ZonedDateTime expenseDate = expense.getExpenseDate();
+//            if (expenseDate.getMonth() == Month.of(month) && expenseDate.getYear() == year) {
+//                expenses.add(expense);
+//            }
+//        }
+//
+//        return expenses;
+//    }
+//
+//    public List<Expense> getExpenses(ExpenseSearchQuery searchQuery, int budgetID, User user) {
+//        return new ArrayList<>();
+//    }
 }

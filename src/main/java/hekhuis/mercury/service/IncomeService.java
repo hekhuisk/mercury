@@ -1,4 +1,4 @@
 package hekhuis.mercury.service;
 
-public class IncomeExpense {
+public class IncomeService {
 }

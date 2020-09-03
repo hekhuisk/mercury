@@ -2,7 +2,6 @@ package hekhuis.mercury.api;
 
 import hekhuis.mercury.entity.budget.Budget;
 import hekhuis.mercury.service.BudgetService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
@@ -19,34 +18,33 @@ import javax.ws.rs.core.MediaType;
 @Path("/budget")
 public class BudgetAPI {
 
-    @Autowired
     private BudgetService budgetService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void createBudget(Budget budget) {
-        budgetService.createBudget(budget);
+        budgetService.createBudget(budget, null);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{budgetID}")
-    public Budget getBudget(@PathParam("budgetID") int budgetID) {
-        return budgetService.getBudget(budgetID);
+    public Budget getBudget(@PathParam("budgetID") int budgetID) throws Exception {
+        return budgetService.getBudget(budgetID, null);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{budgetID}")
-    public void updateBudget(@PathParam("budgetID") int budgetID, Budget budget) {
-        budgetService.updateBudget(budgetID, budget);
+    public void updateBudget(@PathParam("budgetID") int budgetID, Budget budget) throws Exception {
+        budgetService.updateBudget(budgetID, budget, null);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{budgetID}")
-    public void deleteBudget(@PathParam("budgetID") int budgetID) {
-        budgetService.deleteBudget(budgetID);
+    public void deleteBudget(@PathParam("budgetID") int budgetID) throws Exception {
+        budgetService.deleteBudget(budgetID, null);
     }
 }

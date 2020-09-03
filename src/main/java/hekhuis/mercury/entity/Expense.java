@@ -1,36 +1,54 @@
 package hekhuis.mercury.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.ZonedDateTime;
 
+@Entity
 public class Expense extends AuditData {
 
-    private int expenseID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long expenseID;
 
-    private Money cost;
     private int paymentSourceID;
-    private ZonedDateTime expenseDate;
     private int subCategoryID;
     private int mainCategoryID;
     private int budgetID;
 
+//    @Embedded
+//    private Money cost;
+    private ZonedDateTime expenseDate;
+    //@Column(name = "description")
     private String description;
+    //@Column(name = "major_purchase")
     private boolean majorPurchase;
 
-    public int getExpenseID() {
+    public Expense() {}
+
+    public Expense(Money cost, String description, boolean majorPurchase) {
+//        this.cost = cost;
+        this.description = description;
+        this.majorPurchase = majorPurchase;
+    }
+
+    public long getExpenseID() {
         return expenseID;
     }
 
-    public void setExpenseID(int expenseID) {
+    public void setExpenseID(long expenseID) {
         this.expenseID = expenseID;
     }
 
-    public Money getCost() {
-        return cost;
-    }
-
-    public void setCost(Money cost) {
-        this.cost = cost;
-    }
+//    public Money getCost() {
+//        return cost;
+//    }
+//
+//    public void setCost(Money cost) {
+//        this.cost = cost;
+//    }
 
     public ZonedDateTime getExpenseDate() {
         return expenseDate;
