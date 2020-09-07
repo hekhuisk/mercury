@@ -1,4 +1,4 @@
-package hekhuis.mercury.spring.jpa;
+package hekhuis.mercury.config.jpa;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

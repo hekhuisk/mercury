@@ -1,6 +1,7 @@
 package hekhuis.mercury.api;
 
 import hekhuis.mercury.entity.Expense;
+import hekhuis.mercury.entity.User;
 import hekhuis.mercury.service.ExpenseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +36,11 @@ public class ExpenseAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createExpense(Expense expense) {
         try {
-            Expense savedExpense = expenseService.saveExpense(expense);
+            User user = new User();
+            Expense savedExpense = expenseService.saveExpense(expense, user);
             return Response.ok(savedExpense).build();
         } catch (Exception e) {
+            logger.error("Error", e);
             return Response.serverError().build();
         }
     }
@@ -47,7 +50,8 @@ public class ExpenseAPI {
     @Path("/{expenseID}")
     public ResponseEntity<Expense> getExpense(@PathParam("expenseID") long expenseID) {
         try {
-            Expense expense = expenseService.getExpense(expenseID);
+            User user = new User();
+            Expense expense = expenseService.getExpense(expenseID, user);
             return new ResponseEntity<>(expense, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,8 +66,8 @@ public class ExpenseAPI {
     @Path("/{expenseID}")
     public ResponseEntity<Expense> updateExpense(@PathParam("expenseID") long expenseID, Expense expense) {
         try {
-            expenseService.getExpense(expenseID); // Make sure the Expense being updated actually exists
-            Expense savedExpense = expenseService.saveExpense(expense);
+            User user = new User();
+            Expense savedExpense = expenseService.saveExpense(expense, user);
             return new ResponseEntity<>(savedExpense, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -76,8 +80,13 @@ public class ExpenseAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{expenseID}")
     public ResponseEntity<?> deleteExpense(@PathParam("expenseID") long expenseID) {
-        expenseService.deleteExpense(expenseID);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            User user = new User();
+            expenseService.deleteExpense(expenseID, user);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GET

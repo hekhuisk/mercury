@@ -4,12 +4,12 @@ import java.time.ZonedDateTime;
 
 public class Income extends AuditData {
 
-    private int incomeID;
+    private long incomeID;
 
-    private int paymentSourceID;
-    private int subCategoryID;
-    private int mainCategoryID;
-    private int budgetID;
+    private long paymentSourceID;
+    private long subCategoryID;
+    private long mainCategoryID;
+    private long budgetID;
 
     private Money amount;
     private ZonedDateTime incomeDate;

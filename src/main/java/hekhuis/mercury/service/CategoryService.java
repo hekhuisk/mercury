@@ -1,18 +1,17 @@
 package hekhuis.mercury.service;
 
-import hekhuis.mercury.dao.CategoryDAO;
 import hekhuis.mercury.entity.User;
 import hekhuis.mercury.entity.category.CategoryGrouping;
 import hekhuis.mercury.entity.category.CategoryType;
 import hekhuis.mercury.entity.category.MainCategory;
 import hekhuis.mercury.entity.category.SubCategory;
 import hekhuis.mercury.util.SecurityUtil;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CategoryService {
-
-    public static final CategoryDAO categoryDAO = new CategoryDAO();
 
     public void createMainCategory(MainCategory mainCategory, User user) throws Exception {
         SecurityUtil.validateUserCanEditBudget(user, mainCategory.getBudgetID());

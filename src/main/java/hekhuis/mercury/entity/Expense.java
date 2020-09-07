@@ -1,5 +1,6 @@
 package hekhuis.mercury.entity;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,13 +14,13 @@ public class Expense extends AuditData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long expenseID;
 
-    private int paymentSourceID;
-    private int subCategoryID;
-    private int mainCategoryID;
-    private int budgetID;
+    private long paymentSourceID;
+    private long subCategoryID;
+    private long mainCategoryID;
+    private long budgetID;
 
-//    @Embedded
-//    private Money cost;
+    @Embedded
+    private Money amount;
     private ZonedDateTime expenseDate;
     //@Column(name = "description")
     private String description;
@@ -28,8 +29,8 @@ public class Expense extends AuditData {
 
     public Expense() {}
 
-    public Expense(Money cost, String description, boolean majorPurchase) {
-//        this.cost = cost;
+    public Expense(Money amount, String description, boolean majorPurchase) {
+        this.amount = amount;
         this.description = description;
         this.majorPurchase = majorPurchase;
     }
@@ -42,13 +43,45 @@ public class Expense extends AuditData {
         this.expenseID = expenseID;
     }
 
-//    public Money getCost() {
-//        return cost;
-//    }
-//
-//    public void setCost(Money cost) {
-//        this.cost = cost;
-//    }
+    public long getPaymentSourceID() {
+        return paymentSourceID;
+    }
+
+    public void setPaymentSourceID(long paymentSourceID) {
+        this.paymentSourceID = paymentSourceID;
+    }
+
+    public long getSubCategoryID() {
+        return subCategoryID;
+    }
+
+    public void setSubCategoryID(long subCategoryID) {
+        this.subCategoryID = subCategoryID;
+    }
+
+    public long getMainCategoryID() {
+        return mainCategoryID;
+    }
+
+    public void setMainCategoryID(long mainCategoryID) {
+        this.mainCategoryID = mainCategoryID;
+    }
+
+    public long getBudgetID() {
+        return budgetID;
+    }
+
+    public void setBudgetID(long budgetID) {
+        this.budgetID = budgetID;
+    }
+
+    public Money getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Money amount) {
+        this.amount = amount;
+    }
 
     public ZonedDateTime getExpenseDate() {
         return expenseDate;
@@ -56,30 +89,6 @@ public class Expense extends AuditData {
 
     public void setExpenseDate(ZonedDateTime expenseDate) {
         this.expenseDate = expenseDate;
-    }
-
-    public int getSubCategoryID() {
-        return subCategoryID;
-    }
-
-    public void setSubCategoryID(int subCategoryID) {
-        this.subCategoryID = subCategoryID;
-    }
-
-    public int getMainCategoryID() {
-        return mainCategoryID;
-    }
-
-    public void setMainCategoryID(int mainCategoryID) {
-        this.mainCategoryID = mainCategoryID;
-    }
-
-    public int getBudgetID() {
-        return budgetID;
-    }
-
-    public void setBudgetID(int budgetID) {
-        this.budgetID = budgetID;
     }
 
     public String getDescription() {

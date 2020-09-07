@@ -2,27 +2,27 @@ package hekhuis.mercury.entity.budget;
 
 public class Budget {
 
-    private int budgetID;
-    private int userID;
+    private long budgetID;
+    private long userID;
 
     private String name;
     private String description;
 
     private BudgetType budgetType; // like envelope method or something
 
-    public int getBudgetID() {
+    public long getBudgetID() {
         return budgetID;
     }
 
-    public void setBudgetID(int budgetID) {
+    public void setBudgetID(long budgetID) {
         this.budgetID = budgetID;
     }
 
-    public int getUserID() {
+    public long getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(long userID) {
         this.userID = userID;
     }
 

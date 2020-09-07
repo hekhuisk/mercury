@@ -1,6 +1,8 @@
 package hekhuis.mercury.entity;
 
-import hekhuis.mercury.spring.jpa.CurrencyConverter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import hekhuis.mercury.config.rest.deserialize.MoneyDeserializer;
+import hekhuis.mercury.config.jpa.CurrencyConverter;
 
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
@@ -11,6 +13,7 @@ import java.util.Currency;
 import java.util.Locale;
 
 @Embeddable
+@JsonDeserialize(using = MoneyDeserializer.class)
 public class Money {
 
     private static final Currency defaultCurrency = Currency.getInstance("USD");
@@ -31,13 +34,13 @@ public class Money {
         this(amount, defaultCurrency);
     }
 
-    public Money(double amount, Currency currency) {
-        this(BigDecimal.valueOf(amount), currency);
-    }
-
-    public Money(double amount) {
-        this(BigDecimal.valueOf(amount));
-    }
+//    public Money(double amount, Currency currency) {
+//        this(BigDecimal.valueOf(amount), currency);
+//    }
+//
+//    public Money(double amount) {
+//        this(BigDecimal.valueOf(amount));
+//    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -51,7 +54,7 @@ public class Money {
         return currency;
     }
 
-    public void setAmount(Currency currency) {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 

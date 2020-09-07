@@ -1,4 +1,4 @@
-package hekhuis.mercury.spring;
+package hekhuis.mercury.config.rest;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;

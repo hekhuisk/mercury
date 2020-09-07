@@ -1,75 +1,68 @@
 package hekhuis.mercury.service;
 
 import hekhuis.mercury.entity.Expense;
+import hekhuis.mercury.entity.User;
 import hekhuis.mercury.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
-//@Transactional
+@Transactional
 public class ExpenseService {
+
+    private static Map<Long, Expense> expenseMap = new HashMap<>();
 
     @Autowired
     private ExpenseRepository expenseRepository;
 
+    @Autowired
+    private BudgetService budgetService;
+    @Autowired
+    private PaymentSourceService paymentSourceService;
+
     public List<Expense> getAllExpenses() {
-        return expenseRepository.findAll();
+        //return expenseRepository.findAll();
+        return (List<Expense>) expenseMap.values();
     }
 
-    public Expense saveExpense(Expense expense) {
-        return expenseRepository.save(expense);
+    public Expense saveExpense(Expense expense, User user) throws Exception {
+        //return expenseRepository.save(expense);
+        validateUserCanAccessExpense(expense.getExpenseID(), user);
+        paymentSourceService.validateUserCanAccessPaymentSource(expense.getPaymentSourceID(), user);
+
+        Expense existingExpense = expenseMap.get(expense.getBudgetID());
+        if (existingExpense == null) {
+            if (existingExpense.getBudgetID() != expense.getBudgetID()) {
+                throw new Exception("Invalid budget ID");
+            }
+            validateUserCanAccessExpense(existingExpense.getBudgetID(), user);
+            expenseMap.replace(existingExpense.getBudgetID(), expense);
+        } else {
+            expenseMap.put(expense.getBudgetID(), expense);
+        }
+
+        return expense;
     }
 
-    public Expense getExpense(long id) {
-        return expenseRepository.findById(id).get();
+    public Expense getExpense(long expenseID, User user) throws Exception {
+        //return expenseRepository.findById(expenseID).get();
+        validateUserCanAccessExpense(expenseID, user);
+        return expenseMap.get(expenseID);
     }
 
-    public void deleteExpense(long id) {
-        expenseRepository.deleteById(id);
+    public void deleteExpense(long expenseID, User user) throws Exception {
+        //expenseRepository.deleteById(expenseID);
+        validateUserCanAccessExpense(expenseID, user);
+        expenseMap.remove(expenseID);
     }
 
-    //    public static final ExpenseDAO expenseDAO = new ExpenseDAO();
-
-//
-//    public void createExpense(Expense expense, User user) throws Exception {
-//        SecurityUtil.validateUserCanEditBudget(user, expense.getBudgetID());
-//        expenseDAO.createExpense(expense, user);
-//    }
-//
-//    public Expense getExpense(int expenseID, int budgetID, User user) throws Exception {
-//        SecurityUtil.validateUserCanEditBudget(user, budgetID);
-//        return expenseDAO.getExpense(expenseID, budgetID, user);
-//    }
-//
-//    public void updateExpense(int expenseID, Expense expense, User user) throws Exception {
-//        if (expenseID != expense.getExpenseID()) {
-//            throw new Exception();
-//        }
-//        SecurityUtil.validateUserCanEditBudget(user, expense.getBudgetID());
-//        expenseDAO.updateExpense(expenseID, expense, expense.getBudgetID(), user);
-//    }
-//
-//    public void deleteExpense(int expenseID, int budgetID, User user) throws Exception {
-//        SecurityUtil.validateUserCanEditBudget(user, budgetID);
-//        expenseDAO.deleteExpense(expenseID, budgetID, user);
-//    }
-
-//    public List<Expense> getExpenses(int month, int year, int budgetID, User user) {
-//        List<Expense> expenses = new ArrayList<>();
-//
-//        for (Expense expense : expenseMap.values()) {
-//            ZonedDateTime expenseDate = expense.getExpenseDate();
-//            if (expenseDate.getMonth() == Month.of(month) && expenseDate.getYear() == year) {
-//                expenses.add(expense);
-//            }
-//        }
-//
-//        return expenses;
-//    }
-//
-//    public List<Expense> getExpenses(ExpenseSearchQuery searchQuery, int budgetID, User user) {
-//        return new ArrayList<>();
-//    }
+    public void validateUserCanAccessExpense(long expenseID, User user) throws Exception {
+        Expense expense = expenseMap.get(expenseID);
+        budgetService.validateUserCanAccessBudget(expense.getBudgetID(), user);
+    }
 }

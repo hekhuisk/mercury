@@ -1,34 +1,52 @@
 package hekhuis.mercury.service;
 
-import hekhuis.mercury.dao.BudgetDAO;
 import hekhuis.mercury.entity.User;
 import hekhuis.mercury.entity.budget.Budget;
-import hekhuis.mercury.util.SecurityUtil;
+import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
 public class BudgetService {
 
-    public static final BudgetDAO budgetDAO = new BudgetDAO();
+    private static Map<Long, Budget> budgetMap = new HashMap<>();
 
-    public void createBudget(Budget budget, User user) {
-        budgetDAO.createBudget(budget, user);
-    }
-
-    public Budget getBudget(int budgetID, User user) throws Exception {
-        SecurityUtil.validateUserCanEditBudget(user, budgetID);
-        return budgetDAO.getBudget(budgetID, user);
-    }
-
-    public void updateBudget(int budgetID, Budget budget, User user) throws Exception {
-        if (budgetID != budget.getBudgetID()) {
-            throw new Exception("Invalid budget ID");
+    public Budget saveBudget(Budget budget, User user) throws Exception {
+        Budget existingBudget = budgetMap.get(budget.getBudgetID());
+        if (existingBudget == null) {
+            if (existingBudget.getBudgetID() != budget.getBudgetID()) {
+                throw new Exception("Invalid budget ID");
+            }
+            validateUserCanAccessBudget(existingBudget.getBudgetID(), user);
+            budgetMap.replace(existingBudget.getBudgetID(), budget);
+        } else {
+            budget.setUserID(user.getUserID());
+            budgetMap.put(budget.getBudgetID(), budget);
         }
-        SecurityUtil.validateUserCanEditBudget(user, budgetID);
 
-        budgetDAO.updateBudget(budgetID, budget, user);
+        return budget;
     }
 
-    public void deleteBudget(int budgetID, User user) throws Exception {
-        SecurityUtil.validateUserCanEditBudget(user, budgetID);
-        budgetDAO.deleteBudget(budgetID, user);
+    public Budget getBudget(long budgetID, User user) throws Exception {
+        validateUserCanAccessBudget(budgetID, user);
+        return budgetMap.get(budgetID);
+    }
+
+    public void deleteBudget(long budgetID, User user) throws Exception {
+        validateUserCanAccessBudget(budgetID, user);
+        budgetMap.remove(budgetID);
+    }
+
+    public List<Budget> getAllBudgets() {
+        return (List<Budget>) budgetMap.values();
+    }
+
+    public void validateUserCanAccessBudget(long budgetID, User user) throws Exception {
+        Budget budget = budgetMap.get(budgetID);
+        if (budget.getUserID() != user.getUserID()) {
+            throw new Exception("User does not have access to this budget");
+        }
     }
 }

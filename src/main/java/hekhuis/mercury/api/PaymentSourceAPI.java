@@ -1,8 +1,8 @@
 package hekhuis.mercury.api;
 
+import hekhuis.mercury.entity.PaymentSource;
 import hekhuis.mercury.entity.User;
-import hekhuis.mercury.entity.budget.Budget;
-import hekhuis.mercury.service.BudgetService;
+import hekhuis.mercury.service.PaymentSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +24,21 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Component
-@Path("/budget")
-public class BudgetAPI {
-    private static final Logger logger = LoggerFactory.getLogger(BudgetAPI.class);
+@Path("/paymentSource")
+public class PaymentSourceAPI {
+    private static final Logger logger = LoggerFactory.getLogger(PaymentSourceAPI.class);
 
     @Autowired
-    private BudgetService budgetService;
+    private PaymentSourceService paymentSourceService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createBudget(Budget budget) {
+    public Response createPaymentSource(PaymentSource paymentSource) {
         try {
             User user = new User();
-            Budget savedBudget = budgetService.saveBudget(budget, user);
-            return Response.ok(savedBudget).build();
+            PaymentSource savedPaymentSource = paymentSourceService.savePaymentSource(paymentSource, user);
+            return Response.ok(savedPaymentSource).build();
         } catch (Exception e) {
             logger.error("Error", e);
             return Response.serverError().build();
@@ -47,12 +47,12 @@ public class BudgetAPI {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{budgetID}")
-    public ResponseEntity<Budget> getBudget(@PathParam("budgetID") long budgetID) {
+    @Path("/{paymentSourceID}")
+    public ResponseEntity<PaymentSource> getPaymentSource(@PathParam("paymentSourceID") long paymentSourceID) {
         try {
             User user = new User();
-            Budget budget = budgetService.getBudget(budgetID, user);
-            return new ResponseEntity<>(budget, HttpStatus.OK);
+            PaymentSource paymentSource = paymentSourceService.getPaymentSource(paymentSourceID, user);
+            return new ResponseEntity<>(paymentSource, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -63,12 +63,12 @@ public class BudgetAPI {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{budgetID}")
-    public ResponseEntity<Budget> updateBudget(@PathParam("budgetID") long budgetID, Budget budget) {
+    @Path("/{paymentSourceID}")
+    public ResponseEntity<PaymentSource> updatePaymentSource(@PathParam("paymentSourceID") long paymentSourceID, PaymentSource paymentSource) {
         try {
             User user = new User();
-            Budget savedBudget = budgetService.saveBudget(budget, user);
-            return new ResponseEntity<>(savedBudget, HttpStatus.OK);
+            PaymentSource savedPaymentSource = paymentSourceService.savePaymentSource(paymentSource, user);
+            return new ResponseEntity<>(savedPaymentSource, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -78,11 +78,11 @@ public class BudgetAPI {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{budgetID}")
-    public ResponseEntity<?> deleteBudget(@PathParam("budgetID") long budgetID) {
+    @Path("/{paymentSourceID}")
+    public ResponseEntity<?> deletePaymentSource(@PathParam("paymentSourceID") long paymentSourceID) {
+        User user = new User();
         try {
-            User user = new User();
-            budgetService.deleteBudget(budgetID, user);
+            paymentSourceService.deletePaymentSource(paymentSourceID, user);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,7 +91,7 @@ public class BudgetAPI {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseEntity<List<Budget>> getBudgets() {
-        return new ResponseEntity<>(budgetService.getAllBudgets(), HttpStatus.OK);
+    public List<PaymentSource> getPaymentSources() {
+        return paymentSourceService.getAllPaymentSources();
     }
 }

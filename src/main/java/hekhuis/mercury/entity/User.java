@@ -1,12 +1,11 @@
 package hekhuis.mercury.entity;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
 public class User {
 
-    private int userID;
+    private long userID;
     private String username;
 
     private Locale locale;
@@ -14,17 +13,15 @@ public class User {
 
     private boolean adminUser;
 
-    private List<Integer> budgetIDs;
-
     public User() {
 
     }
 
-    public int getUserID() {
+    public long getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(long userID) {
         this.userID = userID;
     }
 
@@ -58,13 +55,5 @@ public class User {
 
     public void setAdminUser(boolean adminUser) {
         this.adminUser = adminUser;
-    }
-
-    public List<Integer> getBudgetIDs() {
-        return budgetIDs;
-    }
-
-    public void setBudgetIDs(List<Integer> budgetIDs) {
-        this.budgetIDs = budgetIDs;
     }
 }
