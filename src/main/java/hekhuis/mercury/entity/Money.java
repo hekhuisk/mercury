@@ -2,17 +2,14 @@ package hekhuis.mercury.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import hekhuis.mercury.config.rest.deserialize.MoneyDeserializer;
-import hekhuis.mercury.config.jpa.CurrencyConverter;
 
-import javax.persistence.Convert;
-import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 
-@Embeddable
+//@Embeddable
 @JsonDeserialize(using = MoneyDeserializer.class)
 public class Money {
 
@@ -20,7 +17,7 @@ public class Money {
     private static final Locale defaultLocale = Locale.US;
 
     private BigDecimal amount;
-    @Convert(converter = CurrencyConverter.class)
+//    @Convert(converter = CurrencyConverter.class)
     private Currency currency;
 
     protected Money() {}

@@ -13,9 +13,11 @@ public class PaymentSourceService {
 
     private static Map<Long, PaymentSource> paymentSourceMap = new HashMap<>();
 
+    private static long newPaymentSourceID = 1;
+
     public PaymentSource savePaymentSource(PaymentSource paymentSource, User user) throws Exception {
         PaymentSource existingPaymentSource = paymentSourceMap.get(paymentSource.getPaymentSourceID());
-        if (existingPaymentSource == null) {
+        if (existingPaymentSource != null) {
             if (existingPaymentSource.getPaymentSourceID() != paymentSource.getPaymentSourceID()) {
                 throw new Exception("Invalid payment source ID");
             }
@@ -23,6 +25,7 @@ public class PaymentSourceService {
             paymentSourceMap.replace(existingPaymentSource.getPaymentSourceID(), paymentSource);
         } else {
             paymentSource.setUserID(user.getUserID());
+            paymentSource.setPaymentSourceID(newPaymentSourceID++);
             paymentSourceMap.put(paymentSource.getPaymentSourceID(), paymentSource);
         }
 

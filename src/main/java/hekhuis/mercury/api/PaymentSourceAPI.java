@@ -3,6 +3,7 @@ package hekhuis.mercury.api;
 import hekhuis.mercury.entity.PaymentSource;
 import hekhuis.mercury.entity.User;
 import hekhuis.mercury.service.PaymentSourceService;
+import hekhuis.mercury.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,15 @@ public class PaymentSourceAPI {
     @Autowired
     private PaymentSourceService paymentSourceService;
 
+    @Autowired
+    private UserService userService;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createPaymentSource(PaymentSource paymentSource) {
         try {
-            User user = new User();
+            User user = userService.getUser(1);
             PaymentSource savedPaymentSource = paymentSourceService.savePaymentSource(paymentSource, user);
             return Response.ok(savedPaymentSource).build();
         } catch (Exception e) {
@@ -50,12 +54,13 @@ public class PaymentSourceAPI {
     @Path("/{paymentSourceID}")
     public ResponseEntity<PaymentSource> getPaymentSource(@PathParam("paymentSourceID") long paymentSourceID) {
         try {
-            User user = new User();
+            User user = userService.getUser(1);
             PaymentSource paymentSource = paymentSourceService.getPaymentSource(paymentSourceID, user);
             return new ResponseEntity<>(paymentSource, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            logger.error("Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -66,12 +71,13 @@ public class PaymentSourceAPI {
     @Path("/{paymentSourceID}")
     public ResponseEntity<PaymentSource> updatePaymentSource(@PathParam("paymentSourceID") long paymentSourceID, PaymentSource paymentSource) {
         try {
-            User user = new User();
+            User user = userService.getUser(1);
             PaymentSource savedPaymentSource = paymentSourceService.savePaymentSource(paymentSource, user);
             return new ResponseEntity<>(savedPaymentSource, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            logger.error("Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -80,11 +86,12 @@ public class PaymentSourceAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{paymentSourceID}")
     public ResponseEntity<?> deletePaymentSource(@PathParam("paymentSourceID") long paymentSourceID) {
-        User user = new User();
         try {
+            User user = userService.getUser(1);
             paymentSourceService.deletePaymentSource(paymentSourceID, user);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            logger.error("Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

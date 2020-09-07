@@ -3,6 +3,7 @@ package hekhuis.mercury.api;
 import hekhuis.mercury.entity.Expense;
 import hekhuis.mercury.entity.User;
 import hekhuis.mercury.service.ExpenseService;
+import hekhuis.mercury.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,15 @@ public class ExpenseAPI {
     @Autowired
     private ExpenseService expenseService;
 
+    @Autowired
+    private UserService userService;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createExpense(Expense expense) {
         try {
-            User user = new User();
+            User user = userService.getUser(1);
             Expense savedExpense = expenseService.saveExpense(expense, user);
             return Response.ok(savedExpense).build();
         } catch (Exception e) {
@@ -50,12 +54,13 @@ public class ExpenseAPI {
     @Path("/{expenseID}")
     public ResponseEntity<Expense> getExpense(@PathParam("expenseID") long expenseID) {
         try {
-            User user = new User();
+            User user = userService.getUser(1);
             Expense expense = expenseService.getExpense(expenseID, user);
             return new ResponseEntity<>(expense, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            logger.error("Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -66,12 +71,13 @@ public class ExpenseAPI {
     @Path("/{expenseID}")
     public ResponseEntity<Expense> updateExpense(@PathParam("expenseID") long expenseID, Expense expense) {
         try {
-            User user = new User();
+            User user = userService.getUser(1);
             Expense savedExpense = expenseService.saveExpense(expense, user);
             return new ResponseEntity<>(savedExpense, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            logger.error("Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -81,10 +87,11 @@ public class ExpenseAPI {
     @Path("/{expenseID}")
     public ResponseEntity<?> deleteExpense(@PathParam("expenseID") long expenseID) {
         try {
-            User user = new User();
+            User user = userService.getUser(1);
             expenseService.deleteExpense(expenseID, user);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            logger.error("Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

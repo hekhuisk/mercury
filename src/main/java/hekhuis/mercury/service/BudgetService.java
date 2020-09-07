@@ -13,9 +13,11 @@ public class BudgetService {
 
     private static Map<Long, Budget> budgetMap = new HashMap<>();
 
+    private static long newBudgetID = 1;
+
     public Budget saveBudget(Budget budget, User user) throws Exception {
         Budget existingBudget = budgetMap.get(budget.getBudgetID());
-        if (existingBudget == null) {
+        if (existingBudget != null) {
             if (existingBudget.getBudgetID() != budget.getBudgetID()) {
                 throw new Exception("Invalid budget ID");
             }
@@ -23,6 +25,7 @@ public class BudgetService {
             budgetMap.replace(existingBudget.getBudgetID(), budget);
         } else {
             budget.setUserID(user.getUserID());
+            budget.setBudgetID(newBudgetID++);
             budgetMap.put(budget.getBudgetID(), budget);
         }
 

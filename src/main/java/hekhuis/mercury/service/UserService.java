@@ -12,8 +12,22 @@ public class UserService {
 
     private static Map<Long, User> userMap = new HashMap<>();
 
-    public User saveUser(User user) {
-        userMap.put(user.getUserID(), user);
+    private static long newUserID = 1;
+
+    // Will probably need to make separate methods for create and update since update needs to make sure current logged in person is the same as one being updated
+
+    public User saveUser(User user) throws Exception {
+        User existingUser = userMap.get(user.getUserID());
+        if (existingUser != null) {
+            if (existingUser.getUserID() != user.getUserID()) {
+                throw new Exception("Invalid user ID");
+            }
+            userMap.replace(existingUser.getUserID(), user);
+        } else {
+            user.setUserID(newUserID++);
+            userMap.put(user.getUserID(), user);
+        }
+
         return user;
     }
 

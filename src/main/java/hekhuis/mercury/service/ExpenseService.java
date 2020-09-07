@@ -2,23 +2,22 @@ package hekhuis.mercury.service;
 
 import hekhuis.mercury.entity.Expense;
 import hekhuis.mercury.entity.User;
-import hekhuis.mercury.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
-@Transactional
 public class ExpenseService {
 
     private static Map<Long, Expense> expenseMap = new HashMap<>();
 
-    @Autowired
-    private ExpenseRepository expenseRepository;
+    private static long newExpenseID = 1;
+
+//    @Autowired
+//    private ExpenseRepository expenseRepository;
 
     @Autowired
     private BudgetService budgetService;
@@ -35,15 +34,16 @@ public class ExpenseService {
         validateUserCanAccessExpense(expense.getExpenseID(), user);
         paymentSourceService.validateUserCanAccessPaymentSource(expense.getPaymentSourceID(), user);
 
-        Expense existingExpense = expenseMap.get(expense.getBudgetID());
-        if (existingExpense == null) {
-            if (existingExpense.getBudgetID() != expense.getBudgetID()) {
-                throw new Exception("Invalid budget ID");
+        Expense existingExpense = expenseMap.get(expense.getExpenseID());
+        if (existingExpense != null) {
+            if (existingExpense.getExpenseID() != expense.getExpenseID()) {
+                throw new Exception("Invalid expense ID");
             }
-            validateUserCanAccessExpense(existingExpense.getBudgetID(), user);
-            expenseMap.replace(existingExpense.getBudgetID(), expense);
+            validateUserCanAccessExpense(existingExpense.getExpenseID(), user);
+            expenseMap.replace(existingExpense.getExpenseID(), expense);
         } else {
-            expenseMap.put(expense.getBudgetID(), expense);
+            expense.setExpenseID(newExpenseID++);
+            expenseMap.put(expense.getExpenseID(), expense);
         }
 
         return expense;

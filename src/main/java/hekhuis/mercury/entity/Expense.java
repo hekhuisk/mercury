@@ -1,17 +1,12 @@
 package hekhuis.mercury.entity;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.time.ZonedDateTime;
 
-@Entity
+//@Entity
 public class Expense extends AuditData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private long expenseID;
 
     private long paymentSourceID;
@@ -19,7 +14,7 @@ public class Expense extends AuditData {
     private long mainCategoryID;
     private long budgetID;
 
-    @Embedded
+//    @Embedded
     private Money amount;
     private ZonedDateTime expenseDate;
     //@Column(name = "description")
