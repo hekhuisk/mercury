@@ -5,6 +5,7 @@ import hekhuis.mercury.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +21,11 @@ public class ExpenseService {
 //    private ExpenseRepository expenseRepository;
 
     @Autowired
-    private BudgetService budgetService;
-    @Autowired
     private PaymentSourceService paymentSourceService;
 
     public List<Expense> getAllExpenses() {
         //return expenseRepository.findAll();
-        return (List<Expense>) expenseMap.values();
+        return new ArrayList<>(expenseMap.values());
     }
 
     public Expense saveExpense(Expense expense, User user) throws Exception {
@@ -63,6 +62,8 @@ public class ExpenseService {
 
     public void validateUserCanAccessExpense(long expenseID, User user) throws Exception {
         Expense expense = expenseMap.get(expenseID);
-        budgetService.validateUserCanAccessBudget(expense.getBudgetID(), user);
+        if (expense.getUserID() != user.getUserID()) {
+            throw new Exception("User does not have access to this expense");
+        }
     }
 }

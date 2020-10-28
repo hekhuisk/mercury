@@ -9,7 +9,7 @@ public class Income extends AuditData {
     private long paymentSourceID;
     private long subCategoryID;
     private long mainCategoryID;
-    private long budgetID;
+    private long userID;
 
     private Money amount;
     private ZonedDateTime incomeDate;

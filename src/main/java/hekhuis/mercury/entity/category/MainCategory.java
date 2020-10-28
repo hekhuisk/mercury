@@ -4,25 +4,25 @@ import hekhuis.mercury.entity.AuditData;
 
 public class MainCategory extends AuditData {
 
-    private int mainCategoryID;
-    private int budgetID;
+    private long mainCategoryID;
+    private long userID;
     private String name;
     private CategoryType categoryType;
 
-    public int getMainCategoryID() {
+    public long getMainCategoryID() {
         return mainCategoryID;
     }
 
-    public void setMainCategoryID(int mainCategoryID) {
+    public void setMainCategoryID(long mainCategoryID) {
         this.mainCategoryID = mainCategoryID;
     }
 
-    public int getBudgetID() {
-        return budgetID;
+    public long getUserID() {
+        return userID;
     }
 
-    public void setBudgetID(int budgetID) {
-        this.budgetID = budgetID;
+    public void setUserID(long userID) {
+        this.userID = userID;
     }
 
     public String getName() {

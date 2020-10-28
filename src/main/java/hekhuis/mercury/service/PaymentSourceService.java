@@ -4,6 +4,7 @@ import hekhuis.mercury.entity.PaymentSource;
 import hekhuis.mercury.entity.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,10 @@ public class PaymentSourceService {
     private static long newPaymentSourceID = 1;
 
     public PaymentSource savePaymentSource(PaymentSource paymentSource, User user) throws Exception {
+        if (paymentSource == null || user == null) {
+            throw new Exception("Invalid parameters");
+        }
+
         PaymentSource existingPaymentSource = paymentSourceMap.get(paymentSource.getPaymentSourceID());
         if (existingPaymentSource != null) {
             if (existingPaymentSource.getPaymentSourceID() != paymentSource.getPaymentSourceID()) {
@@ -33,16 +38,25 @@ public class PaymentSourceService {
     }
 
     public PaymentSource getPaymentSource(long paymentSourceID, User user) throws Exception {
+        if (user == null) {
+            throw new Exception("Invalid parameters");
+        }
+
         validateUserCanAccessPaymentSource(paymentSourceID, user);
         return paymentSourceMap.get(paymentSourceID);
     }
 
     public void deletePaymentSource(long paymentSourceID, User user) throws Exception {
+        if (user == null) {
+            throw new Exception("Invalid parameters");
+        }
+
         validateUserCanAccessPaymentSource(paymentSourceID, user);
+        paymentSourceMap.remove(paymentSourceID);
     }
 
     public List<PaymentSource> getAllPaymentSources() {
-        return (List<PaymentSource>) paymentSourceMap.values();
+        return new ArrayList<>(paymentSourceMap.values());
     }
 
     public void validateUserCanAccessPaymentSource(long paymentSourceID, User user) throws Exception {

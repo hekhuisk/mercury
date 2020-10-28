@@ -18,7 +18,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -33,13 +32,13 @@ public class UserAPI {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(User user) {
+    public ResponseEntity<User> createUser(User user) {
         try {
-            User savedUser = userService.saveUser(user);
-            return Response.ok(savedUser).build();
+            User savedUser = userService.createUser(user);
+            return new ResponseEntity<>(savedUser, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error", e);
-            return Response.serverError().build();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -64,7 +63,7 @@ public class UserAPI {
     @Path("/{userID}")
     public ResponseEntity<User> updateUser(@PathParam("userID") long userID, User user) {
         try {
-            User savedUser = userService.saveUser(user);
+            User savedUser = userService.updateUser(userID, user);
             return new ResponseEntity<>(savedUser, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

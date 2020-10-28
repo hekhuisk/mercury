@@ -4,23 +4,23 @@ import hekhuis.mercury.entity.AuditData;
 
 public class SubCategory extends AuditData {
 
-    private int subCategoryID;
-    private int mainCategoryID;
+    private long subCategoryID;
+    private long mainCategoryID;
     private String name;
 
-    public int getSubCategoryID() {
+    public long getSubCategoryID() {
         return subCategoryID;
     }
 
-    public void setSubCategoryID(int subCategoryID) {
+    public void setSubCategoryID(long subCategoryID) {
         this.subCategoryID = subCategoryID;
     }
 
-    public int getMainCategoryID() {
+    public long getMainCategoryID() {
         return mainCategoryID;
     }
 
-    public void setMainCategoryID(int mainCategoryID) {
+    public void setMainCategoryID(long mainCategoryID) {
         this.mainCategoryID = mainCategoryID;
     }
 

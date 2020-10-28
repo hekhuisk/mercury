@@ -12,7 +12,7 @@ public class Expense extends AuditData {
     private long paymentSourceID;
     private long subCategoryID;
     private long mainCategoryID;
-    private long budgetID;
+    private long userID;
 
 //    @Embedded
     private Money amount;
@@ -62,12 +62,12 @@ public class Expense extends AuditData {
         this.mainCategoryID = mainCategoryID;
     }
 
-    public long getBudgetID() {
-        return budgetID;
+    public long getUserID() {
+        return userID;
     }
 
-    public void setBudgetID(long budgetID) {
-        this.budgetID = budgetID;
+    public void setUserID(long userID) {
+        this.userID = userID;
     }
 
     public Money getAmount() {
