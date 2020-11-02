@@ -1,6 +1,6 @@
 package hekhuis.mercury.entity;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
 //@Entity
 public class Expense extends AuditData {
@@ -16,7 +16,7 @@ public class Expense extends AuditData {
 
 //    @Embedded
     private Money amount;
-    private ZonedDateTime expenseDate;
+    private LocalDate expenseDate;
     //@Column(name = "description")
     private String description;
     //@Column(name = "major_purchase")
@@ -78,11 +78,11 @@ public class Expense extends AuditData {
         this.amount = amount;
     }
 
-    public ZonedDateTime getExpenseDate() {
+    public LocalDate getExpenseDate() {
         return expenseDate;
     }
 
-    public void setExpenseDate(ZonedDateTime expenseDate) {
+    public void setExpenseDate(LocalDate expenseDate) {
         this.expenseDate = expenseDate;
     }
 

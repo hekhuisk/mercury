@@ -95,13 +95,13 @@ public class CategoryService {
 
         SubCategory existingSubCategory = subCategoryMap.get(subCategory.getSubCategoryID());
         if (existingSubCategory != null) {
-            if (existingSubCategory.getMainCategoryID() != subCategory.getMainCategoryID()) {
+            if (existingSubCategory.getSubCategoryID() != subCategory.getSubCategoryID()) {
                 throw new Exception("Invalid sub category ID");
             }
-            subCategoryMap.replace(existingSubCategory.getMainCategoryID(), subCategory);
+            subCategoryMap.replace(existingSubCategory.getSubCategoryID(), subCategory);
         } else {
             subCategory.setSubCategoryID(newSubCategoryID++);
-            subCategoryMap.put(subCategory.getMainCategoryID(), subCategory);
+            subCategoryMap.put(subCategory.getSubCategoryID(), subCategory);
         }
 
         return subCategory;
