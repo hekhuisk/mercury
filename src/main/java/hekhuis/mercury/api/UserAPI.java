@@ -19,7 +19,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Component
 @Path("/user")
@@ -49,8 +48,6 @@ public class UserAPI {
         try {
             User user = userService.getUser(userID);
             return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             logger.error("Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -65,8 +62,6 @@ public class UserAPI {
         try {
             User savedUser = userService.updateUser(userID, user);
             return new ResponseEntity<>(savedUser, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             logger.error("Error", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,8 +72,13 @@ public class UserAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userID}")
     public ResponseEntity<?> deleteUser(@PathParam("userID") long userID) {
-        userService.deleteUser(userID);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            userService.deleteUser(userID);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            logger.error("Error", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GET

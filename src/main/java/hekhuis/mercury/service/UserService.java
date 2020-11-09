@@ -1,56 +1,41 @@
 package hekhuis.mercury.service;
 
 import hekhuis.mercury.entity.User;
+import hekhuis.mercury.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserService {
 
-    private static Map<Long, User> userMap = new HashMap<>();
-
-    private static long newUserID = 1;
-
-    static {
-        User user = new User();
-        user.setUserID(newUserID++);
-        user.setUsername("KyleHekhuis");
-        userMap.put(user.getUserID(), user);
-    }
-
-    // Will probably need to make separate methods for create and update since update needs to make sure current logged in person is the same as one being updated
+    @Autowired
+    private UserRepository userRepository;
 
     public User updateUser(long userID, User user) throws Exception {
-        User existingUser = userMap.get(userID);
-        if (existingUser == null) {
-                throw new Exception("User does not exist");
-        }
+        getUser(userID);
         user.setUserID(userID);
-        userMap.replace(existingUser.getUserID(), user);
-
-        return user;
+        return userRepository.save(user);
     }
 
     public User createUser(User user) {
-        user.setUserID(newUserID++);
-        userMap.put(user.getUserID(), user);
+        return userRepository.save(user);
+    }
 
+    public User getUser(long userID) throws Exception {
+        User user = userRepository.findById(userID)
+                                  .orElseThrow(() -> new Exception("User not found for this id :: " + userID));
         return user;
     }
 
-    public User getUser(long userID) {
-        return userMap.get(userID);
-    }
-
-    public void deleteUser(long userID) {
-        userMap.remove(userID);
+    public void deleteUser(long userID) throws Exception {
+        User user = getUser(userID);
+        userRepository.delete(user);
     }
 
     public List<User> getAllUsers() {
-        return new ArrayList<>(userMap.values());
+        return new ArrayList<>(userRepository.findAll());
     }
 }

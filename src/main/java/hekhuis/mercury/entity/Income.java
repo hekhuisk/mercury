@@ -1,17 +1,39 @@
 package hekhuis.mercury.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "incomes")
 public class Income extends AuditData {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "income_id")
     private long incomeID;
 
+    @Column(name = "sub_category_id", nullable = false)
     private long subCategoryID;
+
+    @Column(name = "main_category_id", nullable = false)
     private long mainCategoryID;
+
+    @Column(name = "user_id", nullable = false)
     private long userID;
 
+    @Embedded
     private Money amount;
+
+    @Column(name = "income_date", nullable = false)
     private LocalDate incomeDate;
+
+    @Column(name = "description")
     private String description;
 
     public long getIncomeID() {

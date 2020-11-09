@@ -7,8 +7,6 @@ import hekhuis.mercury.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
@@ -20,8 +18,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Component
 @Path("/expense")
@@ -37,30 +35,28 @@ public class ExpenseAPI {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseEntity<Expense> createExpense(Expense expense) {
+    public Response createExpense(Expense expense) {
         try {
             User user = userService.getUser(1);
-            Expense savedExpense = expenseService.saveExpense(expense, user);
-            return new ResponseEntity<>(savedExpense, HttpStatus.OK);
+            Expense savedExpense = expenseService.createExpense(expense, user);
+            return Response.ok(savedExpense).build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{expenseID}")
-    public ResponseEntity<Expense> getExpense(@PathParam("expenseID") long expenseID) {
+    public Response getExpense(@PathParam("expenseID") long expenseID) {
         try {
             User user = userService.getUser(1);
             Expense expense = expenseService.getExpense(expenseID, user);
-            return new ResponseEntity<>(expense, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return Response.ok(expense).build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
@@ -68,40 +64,41 @@ public class ExpenseAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{expenseID}")
-    public ResponseEntity<Expense> updateExpense(@PathParam("expenseID") long expenseID, Expense expense) {
+    public Response updateExpense(@PathParam("expenseID") long expenseID, Expense expense) {
         try {
             User user = userService.getUser(1);
-            Expense savedExpense = expenseService.saveExpense(expense, user);
-            return new ResponseEntity<>(savedExpense, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Expense savedExpense = expenseService.updateExpense(expenseID, expense, user);
+            return Response.ok(savedExpense).build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{expenseID}")
-    public ResponseEntity<?> deleteExpense(@PathParam("expenseID") long expenseID) {
+    public Response deleteExpense(@PathParam("expenseID") long expenseID) {
         try {
             User user = userService.getUser(1);
             expenseService.deleteExpense(expenseID, user);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return Response.ok().build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Expense> getExpenses() {
-        return expenseService.getAllExpenses();
+    public Response getAllExpensesForUser() {
+        try {
+            User user = userService.getUser(1);
+            List<Expense> expenses = expenseService.getAllExpensesForUser(user.getUserID());
+            return Response.ok(expenses).build();
+        } catch (Exception e) {
+            logger.error("Error", e);
+            return Response.serverError().build();
+        }
     }
 }
-
-
-//curl -X PUT -H "Content-Type: application/json" -d "{\"id\":1,\"name\":\"iPad\",\"price\":888}" http://localhost:8080/products/1
-//curl -X POST -H "Content-Type: application/json" -d "{\"description\":\"XBox 360\"}" http://localhost:8080/mercury/api/expense

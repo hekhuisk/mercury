@@ -1,13 +1,13 @@
 package hekhuis.mercury.repository;
 
-import hekhuis.mercury.entity.PaymentSource;
+import hekhuis.mercury.entity.Income;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface PaymentSourceRepository extends JpaRepository<PaymentSource, Long> {
+public interface IncomeRepository extends JpaRepository<Income, Long> {
 
-    List<PaymentSource> findAllByUserID(long userID);
+    List<Income> findAllByUserID(long userID);
 }

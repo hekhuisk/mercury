@@ -7,8 +7,6 @@ import hekhuis.mercury.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
@@ -20,8 +18,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Component
 @Path("/income")
@@ -37,30 +35,28 @@ public class IncomeAPI {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseEntity<Income> createIncome(Income income) {
+    public Response createIncome(Income income) {
         try {
             User user = userService.getUser(1);
-            Income savedIncome = incomeService.saveIncome(income, user);
-            return new ResponseEntity<>(savedIncome, HttpStatus.OK);
+            Income savedIncome = incomeService.createIncome(income, user);
+            return Response.ok(savedIncome).build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{incomeID}")
-    public ResponseEntity<Income> getIncome(@PathParam("incomeID") long incomeID) {
+    public Response getIncome(@PathParam("incomeID") long incomeID) {
         try {
             User user = userService.getUser(1);
             Income income = incomeService.getIncome(incomeID, user);
-            return new ResponseEntity<>(income, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return Response.ok(income).build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
@@ -68,36 +64,41 @@ public class IncomeAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{incomeID}")
-    public ResponseEntity<Income> updateIncome(@PathParam("incomeID") long incomeID, Income income) {
+    public Response updateIncome(@PathParam("incomeID") long incomeID, Income income) {
         try {
             User user = userService.getUser(1);
-            Income savedIncome = incomeService.saveIncome(income, user);
-            return new ResponseEntity<>(savedIncome, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Income savedIncome = incomeService.updateIncome(incomeID, income, user);
+            return Response.ok(savedIncome).build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{incomeID}")
-    public ResponseEntity<?> deleteIncome(@PathParam("incomeID") long incomeID) {
+    public Response deleteIncome(@PathParam("incomeID") long incomeID) {
         try {
             User user = userService.getUser(1);
             incomeService.deleteIncome(incomeID, user);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return Response.ok().build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Income> getIncomes() {
-        return incomeService.getAllIncomes();
+    public Response getAllIncomesForUser() {
+        try {
+            User user = userService.getUser(1);
+            List<Income> incomes = incomeService.getAllIncomesForUser(user.getUserID());
+            return Response.ok(incomes).build();
+        } catch (Exception e) {
+            logger.error("Error", e);
+            return Response.serverError().build();
+        }
     }
 }

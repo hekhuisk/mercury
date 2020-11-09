@@ -7,8 +7,6 @@ import hekhuis.mercury.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.Consumes;
@@ -22,7 +20,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Component
 @Path("/paymentSource")
@@ -41,7 +38,7 @@ public class PaymentSourceAPI {
     public Response createPaymentSource(PaymentSource paymentSource) {
         try {
             User user = userService.getUser(1);
-            PaymentSource savedPaymentSource = paymentSourceService.savePaymentSource(paymentSource, user);
+            PaymentSource savedPaymentSource = paymentSourceService.createPaymentSource(paymentSource, user);
             return Response.ok(savedPaymentSource).build();
         } catch (Exception e) {
             logger.error("Error", e);
@@ -52,16 +49,14 @@ public class PaymentSourceAPI {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{paymentSourceID}")
-    public ResponseEntity<PaymentSource> getPaymentSource(@PathParam("paymentSourceID") long paymentSourceID) {
+    public Response getPaymentSource(@PathParam("paymentSourceID") long paymentSourceID) {
         try {
             User user = userService.getUser(1);
             PaymentSource paymentSource = paymentSourceService.getPaymentSource(paymentSourceID, user);
-            return new ResponseEntity<>(paymentSource, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return Response.ok(paymentSource).build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
@@ -69,36 +64,41 @@ public class PaymentSourceAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{paymentSourceID}")
-    public ResponseEntity<PaymentSource> updatePaymentSource(@PathParam("paymentSourceID") long paymentSourceID, PaymentSource paymentSource) {
+    public Response updatePaymentSource(@PathParam("paymentSourceID") long paymentSourceID, PaymentSource paymentSource) {
         try {
             User user = userService.getUser(1);
-            PaymentSource savedPaymentSource = paymentSourceService.savePaymentSource(paymentSource, user);
-            return new ResponseEntity<>(savedPaymentSource, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            PaymentSource savedPaymentSource = paymentSourceService.updatePaymentSource(paymentSourceID, paymentSource, user);
+            return Response.ok(savedPaymentSource).build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{paymentSourceID}")
-    public ResponseEntity<?> deletePaymentSource(@PathParam("paymentSourceID") long paymentSourceID) {
+    public Response deletePaymentSource(@PathParam("paymentSourceID") long paymentSourceID) {
         try {
             User user = userService.getUser(1);
             paymentSourceService.deletePaymentSource(paymentSourceID, user);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return Response.ok().build();
         } catch (Exception e) {
             logger.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return Response.serverError().build();
         }
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PaymentSource> getPaymentSources() {
-        return paymentSourceService.getAllPaymentSources();
+    public Response getAllPaymentSourcesForUser() {
+        try {
+            User user = userService.getUser(1);
+            List<PaymentSource> paymentSources = paymentSourceService.getAllPaymentSourcesForUser(user.getUserID());
+            return Response.ok(paymentSources).build();
+        } catch (Exception e) {
+            logger.error("Error", e);
+            return Response.serverError().build();
+        }
     }
 }

@@ -2,67 +2,41 @@ package hekhuis.mercury.service;
 
 import hekhuis.mercury.entity.PaymentSource;
 import hekhuis.mercury.entity.User;
+import hekhuis.mercury.repository.PaymentSourceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PaymentSourceService {
 
-    private static Map<Long, PaymentSource> paymentSourceMap = new HashMap<>();
+    @Autowired
+    private PaymentSourceRepository paymentSourceRepository;
 
-    private static long newPaymentSourceID = 1;
+    public PaymentSource updatePaymentSource(long paymentSourceID, PaymentSource paymentSource, User user) throws Exception {
+        getPaymentSource(paymentSourceID, user);
+        paymentSource.setUserID(paymentSourceID);
+        return paymentSourceRepository.save(paymentSource);
+    }
 
-    public PaymentSource savePaymentSource(PaymentSource paymentSource, User user) throws Exception {
-        if (paymentSource == null || user == null) {
-            throw new Exception("Invalid parameters");
-        }
-
-        PaymentSource existingPaymentSource = paymentSourceMap.get(paymentSource.getPaymentSourceID());
-        if (existingPaymentSource != null) {
-            if (existingPaymentSource.getPaymentSourceID() != paymentSource.getPaymentSourceID()) {
-                throw new Exception("Invalid payment source ID");
-            }
-            validateUserCanAccessPaymentSource(existingPaymentSource.getPaymentSourceID(), user);
-            paymentSourceMap.replace(existingPaymentSource.getPaymentSourceID(), paymentSource);
-        } else {
-            paymentSource.setUserID(user.getUserID());
-            paymentSource.setPaymentSourceID(newPaymentSourceID++);
-            paymentSourceMap.put(paymentSource.getPaymentSourceID(), paymentSource);
-        }
-
-        return paymentSource;
+    public PaymentSource createPaymentSource(PaymentSource paymentSource, User user) {
+        return paymentSourceRepository.save(paymentSource);
     }
 
     public PaymentSource getPaymentSource(long paymentSourceID, User user) throws Exception {
-        if (user == null) {
-            throw new Exception("Invalid parameters");
-        }
-
-        validateUserCanAccessPaymentSource(paymentSourceID, user);
-        return paymentSourceMap.get(paymentSourceID);
+        PaymentSource paymentSource = paymentSourceRepository.findById(paymentSourceID)
+                .orElseThrow(() -> new Exception("Payment Source not found for this id :: " + paymentSourceID));
+        return paymentSource;
     }
 
     public void deletePaymentSource(long paymentSourceID, User user) throws Exception {
-        if (user == null) {
-            throw new Exception("Invalid parameters");
-        }
-
-        validateUserCanAccessPaymentSource(paymentSourceID, user);
-        paymentSourceMap.remove(paymentSourceID);
+        PaymentSource paymentSource = getPaymentSource(paymentSourceID, user);
+        paymentSourceRepository.delete(paymentSource);
     }
 
-    public List<PaymentSource> getAllPaymentSources() {
-        return new ArrayList<>(paymentSourceMap.values());
-    }
-
-    public void validateUserCanAccessPaymentSource(long paymentSourceID, User user) throws Exception {
-        PaymentSource paymentSource = paymentSourceMap.get(paymentSourceID);
-        if (paymentSource.getUserID() != user.getUserID()) {
-            throw new Exception("User does not have access to this payment source");
-        }
+    public List<PaymentSource> getAllPaymentSourcesForUser(long userID) {
+        return new ArrayList<>(paymentSourceRepository.findAllByUserID(userID));
     }
 }

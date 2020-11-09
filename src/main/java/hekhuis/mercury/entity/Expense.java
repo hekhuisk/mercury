@@ -1,25 +1,45 @@
 package hekhuis.mercury.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
-//@Entity
+@Entity
+@Table(name = "expenses")
 public class Expense extends AuditData {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "expense_id")
     private long expenseID;
 
+    @Column(name = "payment_source_id", nullable = false)
     private long paymentSourceID;
+
+    @Column(name = "sub_category_id", nullable = false)
     private long subCategoryID;
+
+    @Column(name = "main_category_id", nullable = false)
     private long mainCategoryID;
+
+    @Column(name = "user_id", nullable = false)
     private long userID;
 
-//    @Embedded
+    @Embedded
     private Money amount;
+
+    @Column(name = "expense_date", nullable = false)
     private LocalDate expenseDate;
-    //@Column(name = "description")
+
+    @Column(name = "description")
     private String description;
-    //@Column(name = "major_purchase")
+
+    @Column(name = "major_purchase")
     private boolean majorPurchase;
 
     public Expense() {}
