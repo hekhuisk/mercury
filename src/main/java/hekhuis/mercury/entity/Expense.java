@@ -1,12 +1,12 @@
 package hekhuis.mercury.entity;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -30,8 +30,8 @@ public class Expense extends AuditData {
     @Column(name = "user_id", nullable = false)
     private long userID;
 
-    @Embedded
-    private Money amount;
+    @Column(name = "amount", nullable = false)
+    private BigDecimal amount;
 
     @Column(name = "expense_date", nullable = false)
     private LocalDate expenseDate;
@@ -41,14 +41,6 @@ public class Expense extends AuditData {
 
     @Column(name = "major_purchase")
     private boolean majorPurchase;
-
-    public Expense() {}
-
-    public Expense(Money amount, String description, boolean majorPurchase) {
-        this.amount = amount;
-        this.description = description;
-        this.majorPurchase = majorPurchase;
-    }
 
     public long getExpenseID() {
         return expenseID;
@@ -90,11 +82,11 @@ public class Expense extends AuditData {
         this.userID = userID;
     }
 
-    public Money getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Money amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
