@@ -11,9 +11,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "sub_category_yearly_totals")
-@IdClass(SubCategoryYearlyTotalsId.class)
-public class SubCategoryYearlyTotals implements Serializable {
+@Table(name = "sub_category_monthly_totals")
+@IdClass(SubCategoryMonthlyTotalsId.class)
+public class SubCategoryMonthlyTotals implements Serializable {
 
     @Id
     @Column(name = "main_category_id", nullable = false)
@@ -70,9 +70,9 @@ public class SubCategoryYearlyTotals implements Serializable {
     @Column(name = "yearly_total")
     private BigDecimal yearlyTotal;
 
-    public SubCategoryYearlyTotals() {}
+    public SubCategoryMonthlyTotals() {}
 
-    public SubCategoryYearlyTotals(long mainCategoryID, long subCategoryID, int year, CategoryType categoryType) {
+    public SubCategoryMonthlyTotals(long mainCategoryID, long subCategoryID, int year, CategoryType categoryType) {
         this.mainCategoryID = mainCategoryID;
         this.subCategoryID = subCategoryID;
         this.year = year;
